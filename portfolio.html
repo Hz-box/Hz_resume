@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive, noimageindex, noai, noimageai">
+<meta name="referrer" content="no-referrer">
+<title>비공개 페이지</title>
+<style>
+:root { --bg:#f6f7f9; --card:#fff; --ink:#16181d; --ink-2:#5b6170; --line:#e6e8ee; }
+@media (prefers-color-scheme: dark) { :root { --bg:#111317; --card:#1a1d23; --ink:#eceef2; --ink-2:#9aa1b0; --line:#2a2e37; } }
+* { box-sizing:border-box; margin:0; }
+html, body { height:100%; }
+body { background:var(--bg); color:var(--ink); font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif; display:flex; align-items:center; justify-content:center; padding:16px; word-break:keep-all; }
+.card { width:100%; max-width:380px; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:32px 28px; text-align:center; }
+.ic { width:44px; height:44px; margin:0 auto 18px; border-radius:12px; border:1px solid var(--line); display:flex; align-items:center; justify-content:center; color:var(--ink-2); }
+h1 { font-size:18px; font-weight:700; margin-bottom:8px; }
+p { font-size:14px; line-height:1.6; color:var(--ink-2); }
+body.wait .card { visibility:hidden; }
+</style>
+</head>
+<body class="wait">
+<main class="card">
+  <div class="ic" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+  <h1 id="t">비공개 페이지예요</h1>
+  <p id="m">전달받은 링크로 접속해 주세요.</p>
+</main>
+<noscript><style>body.wait .card{visibility:visible}</style></noscript>
+<script src="./x/loader.js" data-base="./"></script>
+</body>
+</html>
