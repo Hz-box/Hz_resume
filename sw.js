@@ -6,6 +6,8 @@
 
 const SCOPE = new URL(self.registration.scope);
 const DB = 'vault', STORE = 'kv';
+// 같은 주소(github.io)에 사이트가 여러 개여도 키가 섞이지 않게 사이트 경로별로 저장한다.
+const CRED = 'cred:' + SCOPE.pathname, LEGACY = 'cred';
 let state = null;      // { key: CryptoKey, manifest, id, loadedAt }
 let loading = null;
 
@@ -65,7 +67,14 @@ async function getState(refresh) {
   if (!loading) {
     loading = (async () => {
       const cred = await idb('get');
-      if (!cred) { state = null; return null; }
+      if (!cred) {
+        // 예전 방식(경로 구분 없음)으로 저장된 키: 이 사이트 것이면 옮겨 담고, 아니면 건드리지 않는다.
+        const old = await idb('get', null, LEGACY);
+        if (!old) { state = null; return null; }
+        try { state = await open(old.id, old.secret); await idb('put', old); }
+        catch (_) { state = null; }
+        return state;
+      }
       try {
         state = await open(cred.id, cred.secret);
       } catch (err) {
@@ -106,7 +115,8 @@ function b64u(s) {
   return out;
 }
 
-function idb(op, value) {
+function idb(op, value, name) {
+  const k = name || CRED;
   return new Promise((resolve, reject) => {
     const rq = indexedDB.open(DB, 1);
     rq.onupgradeneeded = () => rq.result.createObjectStore(STORE);
@@ -114,7 +124,7 @@ function idb(op, value) {
     rq.onsuccess = () => {
       const tx = rq.result.transaction(STORE, op === 'get' ? 'readonly' : 'readwrite');
       const s = tx.objectStore(STORE);
-      const r = op === 'get' ? s.get('cred') : op === 'put' ? s.put(value, 'cred') : s.delete('cred');
+      const r = op === 'get' ? s.get(k) : op === 'put' ? s.put(value, k) : s.delete(k);
       r.onsuccess = () => resolve(r.result);
       r.onerror = () => reject(r.error);
     };
